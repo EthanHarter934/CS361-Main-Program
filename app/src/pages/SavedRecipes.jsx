@@ -1,4 +1,5 @@
 import recipes from "../data/recipes";
+import { Link } from "react-router-dom";
 
 function SavedRecipes() {
   return (
@@ -7,13 +8,14 @@ function SavedRecipes() {
       <ul>
         {recipes.map((recipe) => (
           <li key={recipe.id}>
-            <img src={recipe.imageURL}></img>
+            <img src={recipe.imageURL} class="preview-image"></img>
             <p>{recipe.name}</p>
-            <p class="edit">Edit</p>
-            <p class="delete">Delete</p>
+            <img src="edit.png" class="edit"></img>
+            <img src="trashcan.png" class="delete"></img>
           </li>
         ))}
       </ul>
+      <Link to="/createrecipe" class="new-recipe"><i class="fas fa-plus"></i></Link>
     </div>
   );
 }

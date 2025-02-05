@@ -1,4 +1,4 @@
-h1, p, button, .link, li {
+h1, h3, p, button, .link, li, label, button, input, textarea {
   font-family: 'Corben', Georgia, Times, serif;
 }
 
@@ -16,26 +16,34 @@ h1 {
   text-align: center;
 }
 
-button {
-  width: 200px;
-  height: 70px;
-  margin: 20px;
-  border-radius: 10px;
-  background-color: #333;
-  font-size: 20px;
+h3 {
+  font-size: 30px;
+  line-height: 75px;
+  padding-top: 20px;
+  margin-top: -15px;
+  margin-bottom: 10px;
   color: white;
   text-align: center;
-  border-style: none;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
 }
 
 .link {
   font-size: 20px;
   color: white;
   text-decoration: none;
+  width: 200px;
+  height: 70px;
+  margin: 20px;
+  border-radius: 10px;
+  background-color: #333;
+  text-align: center;
+  border-style: none;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-button:hover {
+.link:hover {
   background-color: #252525;
 }
 
@@ -99,21 +107,49 @@ button:hover {
 .saved-recipes ul li {
   width: 60%;
   border-style: solid;
+  border-width: 5px;
+  border-color: rgba(0, 0, 0, 0);
   border-radius: 10px;
   margin: 20px;
   display: flex;
   background-color: white;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
   height: 120px;
+  cursor: pointer;
 }
 
-img {
+.saved-recipes ul li:hover {
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.preview-image {
   width: 100px;
-  height: auto;
+  height: 100px;
+  object-fit: cover;
   margin: 10px;
 }
 
+.delete {
+  width: 30px;
+  height: 30px;
+  align-self: center;
+  transform: translateX(-5px);
+  margin-left: 10px;
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+.edit {
+  width: 30px;
+  height: 30px;
+  align-self: center;
+  margin-left: auto;
+  margin-right: 20px;
+  cursor: pointer;
+}
+
 .saved-recipes ul li p {
-  text-align: center;
+  text-align: left;
   margin-top: auto;
   margin-bottom: auto;
   float: left;
@@ -124,12 +160,97 @@ img {
   margin: 50px;
 }
 
-.edit {
-  margin-left: auto;
-  margin-right: 20px;
+.new-recipe {
+  width: 60px;
+  height: 60px;
+  border-radius: 100%;
+  border: none;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
+  position: fixed;
+  right: 30px;
+  bottom: 30px;
+  font-size: 26px;
+  cursor: pointer;
+  color: #333;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
 }
 
-.delete {
-  margin-left: 10px;
-  margin-right: 20px;
+.new-recipe:hover {
+  right: 27px;
+  bottom: 27px;
+  height: 66px;
+  width: 66px;
+  border-radius: 33px;
+  font-size: 30px;
+  color: #252525;
+}
+
+.create-recipe {
+  background-color: white;
+  width: 800px;
+  height: auto;
+  border-radius: 10px;
+  margin: auto;
+  margin-top: 50px;
+  padding: 20px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
+}
+
+.create-recipe h3 {
+  color: #333;
+  font-size: 40px;
+}
+
+.create-recipe-field {
+  margin: 10px;
+  display: flex;
+  justify-content: flex-start;
+  padding: 5px;
+  flex-wrap: wrap;
+}
+
+.create-recipe-field label {
+  margin: 5px;
+}
+
+#enter-name, #enter-url, #enter-ingredients {
+  align-items: center;
+}
+
+#enter-description, #enter-directions {
+  display: flex;
+  flex-direction: column;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.button {
+  margin: 10px;
+  width: 120px;
+  height: 40px;
+  border-radius: 10px;
+  border-style: solid;
+  border-width: 1px;
+  background-color: #333;
+  color: white;
+  font-size: 18px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
+}
+
+.button:hover {
+  background-color: #252525;
+}
+
+textarea {
+  min-width: 100%;
+  max-width: 100%;
+  height: 70px;
 }

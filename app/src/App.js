@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import Home from "./pages/Home";
 import SavedRecipes from "./pages/SavedRecipes";
+import CreateRecipe from "./pages/CreateRecipe";
+import RecipeDetails from "./pages/RecipeDetails";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -12,6 +14,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/savedrecipes" element={<SavedRecipes />} />
+        <Route path="/createrecipe" element={<CreateRecipe />} />
+        <Route path="/recipedetails" element={<RecipeDetails />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
