@@ -1,25 +1,21 @@
-import logo from './logo.svg';
 import './App.css';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import NavBar from "./components/NavBar";
+import Home from "./pages/Home";
+import SavedRecipes from "./pages/SavedRecipes";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
-    <div class="App">
+    <Router>
       <NavBar />
-      <div class="title-button">
-        <h1>Website Title</h1>
-        <button></button>
-      </div>
-    </div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/savedrecipes" element={<SavedRecipes />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Router>
   );
 }
 
 export default App;
-
-function NavBar() {
-  return (
-      <ul>
-        <li><a href="default.asp">Home</a></li>
-        <li><a href="recipes.asp">Saved Recipes</a></li>
-      </ul>
-  );
-}
