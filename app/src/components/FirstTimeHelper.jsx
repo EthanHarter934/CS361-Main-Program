@@ -34,6 +34,7 @@ function FirstTimeHelper() {
                 <>
                     <div class="blur"></div>
                     <div class="helper-modal">
+                        <button class="close" onClick={close}><i class="fa-solid fa-xmark"></i></button>
                         <h1>Welcome to Recipedia!</h1>
                         <div class="buttons">
                             <button onClick={close}>Close</button>
@@ -47,6 +48,7 @@ function FirstTimeHelper() {
                 <>
                     <div class="blur"></div>
                     <div class="helper-modal">
+                    <button class="close" onClick={close}><i class="fa-solid fa-xmark"></i></button>
                         <img src="screenshot1.png"/>
                         <p>Use the Saved Recipes button to navigate to the saved recipes page.</p>
                         <div class="back-next-buttons">

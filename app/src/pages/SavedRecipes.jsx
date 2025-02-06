@@ -58,7 +58,7 @@ function SavedRecipes() {
                 </li>
             ))}
         </ul>
-        <Link to="/createrecipe" class="new-recipe"><i class="fas fa-plus"></i></Link>
+        <Link to="/createrecipe" class="new-recipe"><i class="fa-solid fa-plus"></i></Link>
     </div>
     );
 }
