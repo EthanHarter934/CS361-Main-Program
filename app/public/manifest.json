@@ -20,12 +20,17 @@
     {
       "src": "trashcan.png",
       "type": "image/png",
-      "sizes": "5,12x512"
+      "sizes": "512x512"
     },
     {
       "src": "edit.png",
       "type": "image/png",
       "sizes": "512x512"
+    },
+    {
+      "src": "screenshot1.png",
+      "type": "image/png",
+      "sizes": "1878x934"
     }
   ],
   "start_url": ".",

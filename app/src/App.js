@@ -1,6 +1,7 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavBar from "./components/NavBar";
+import FirstTimeHelper from './components/FirstTimeHelper';
 import Home from "./pages/Home";
 import SavedRecipes from "./pages/SavedRecipes";
 import CreateRecipe from "./pages/CreateRecipe";
@@ -12,6 +13,7 @@ function App() {
     return (
     <Router>
         <NavBar />
+        <FirstTimeHelper />
         <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/savedrecipes" element={<SavedRecipes />} />

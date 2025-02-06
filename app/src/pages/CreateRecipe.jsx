@@ -1,10 +1,13 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect  } from "react";
 import { useParams } from "react-router-dom";
 
 function CreateRecipe() {
     // Get recipe id from the params
     var { id } = useParams();
+
+    // Initialize page navigation
+    var navigate = useNavigate();
 
     // Creates a state called recipeData, which uses setRecipeData to update the state.
     // The state starts with empty values except for id which defaults to the current
@@ -52,7 +55,7 @@ function CreateRecipe() {
 
         // Checks if the file is greater than 512 kb and returns an alert if this is true
         if (file && file.size > 512 * 1024) {
-            alert("File size is too large, please choose a file smaller than 2MB.");
+            alert("Warning! File size is too large, please choose a file smaller than 2MB!");
             return;
         }
 
@@ -65,7 +68,7 @@ function CreateRecipe() {
             setRecipeData({
               ...recipeData,
               url: reader.result,
-          });
+            });
           };
 
           // Turns the image into a url that can be used as a src for an img tag
@@ -76,6 +79,8 @@ function CreateRecipe() {
 
     // Saves all the form data to local storage
     var handleSave = () => {
+        var err = false;
+
         // Gets already existing recipes and turn the JSON string back into an array
         var savedRecipes = JSON.parse(localStorage.getItem("recipes"));
 
@@ -88,8 +93,13 @@ function CreateRecipe() {
         // recipe, otherwise create a new recipe
         if (id) {
             // Loops over each recipe
-            var updatedRecipes = savedRecipes.map((recipe) => {
+            var updatedRecipes = savedRecipes.map(recipe => {
                 if (recipe.id === parseInt(id)) {
+                    if (recipeData.name == "" || recipeData.url == "" || recipeData.description == "" || recipeData.ingredients == "" || recipeData.directions == "") {
+                        alert("Warning! Please fill out all sections!");
+                        err = true;
+                        return recipe;
+                    }
                     // If the id matches, replace old data with new data
                     return recipeData;
                 } else {
@@ -97,24 +107,46 @@ function CreateRecipe() {
                     return recipe;
                 }
             });
-
-            // Save the updated recipe
-            localStorage.setItem("recipes", JSON.stringify(updatedRecipes));
+            if (!err) {
+                // Save the updated recipe
+                localStorage.setItem("recipes", JSON.stringify(updatedRecipes));
+            }
         } else {
             // Create a new recipe with the already existing data from the input
             // and give it a unique id
             var newRecipe = { ...recipeData, id: Date.now() };
 
-            // Add it to the array of recipes
-            savedRecipes.push(newRecipe);
+            if (newRecipe.name == "" || newRecipe.url == "" || newRecipe.description == "" || newRecipe.ingredients == "" || newRecipe.directions == "") {
+                alert("Warning! Please fill out all sections!");
+                err = true;
+            }
+            if (!err) {
+                // Add it to the array of recipes
+                savedRecipes.push(newRecipe);
 
-            // Update the local storage
-            localStorage.setItem("recipes", JSON.stringify(savedRecipes));
+                // Update the local storage
+                localStorage.setItem("recipes", JSON.stringify(savedRecipes));
+            }
         }
 
-        // Clear all inputs
-        clearForm();
+        if (!err) {
+            // Clear all inputs
+            clearForm();
+
+            // Navigate back to saved recipes
+            navigate("/savedrecipes");
+        }
     };
+
+    var handleCancel = () => {
+        // Send an alert when user tries to cancel creating or editing a recipe
+        if (!window.confirm("Warning! Unsaved information will be lost! Are you sure you want to continue?")) {
+            return;
+        }
+        
+        clearForm();
+        navigate("/savedrecipes")
+    }
 
     // Clear all inputs
     var clearForm = () => {
@@ -153,12 +185,8 @@ function CreateRecipe() {
             <textarea name="directions" value={recipeData.directions} onChange={handleChange}></textarea>
         </div>
         <div class="buttons">
-            <Link to="/savedrecipes">
-                <button class="button" id="cancel" onClick={clearForm}>Cancel</button>
-            </Link>
-            <Link to="/savedrecipes">
-                <button class="button" id="submit" onClick={handleSave}>Submit</button>
-            </Link>
+            <button class="button" id="cancel" onClick={handleCancel}>Cancel</button>
+            <button class="button" id="submit" onClick={handleSave}>Submit</button>
         </div>
       </div>
     );

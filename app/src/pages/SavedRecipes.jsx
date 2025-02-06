@@ -18,6 +18,11 @@ function SavedRecipes() {
     }, []);
 
     var handleDelete = (id) => {
+        // Send an alert when user tries to delete a recipe
+        if (!window.confirm("Warning! Deleted recipes cannot be recovered! Are you sure you want to continue?")) {
+            return;
+        }
+        
         // Gets already existing recipes and turn the JSON string back into an array
         var savedRecipes = JSON.parse(localStorage.getItem("recipes"));
 
