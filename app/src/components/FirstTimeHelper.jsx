@@ -7,11 +7,15 @@ function FirstTimeHelper() {
 
     // Creates a state called step, which tracks the current step of the first time
     // helper and starts at value 1
-    var [step, setStep] = useState(1);
+    var [step, setStep] = useState(0);
     
     useEffect(() => {
-        if (step === 1) {
+        // If user has not visited the website yet, start the first time helper,
+        // navigate to the home page, and set the local storage variable to false
+        if (!localStorage.getItem("firstTimeUser")) {
+            setStep(1);
             navigate("/");
+            localStorage.setItem("firstTimeUser", false);
         }
     }, []);
 
@@ -24,7 +28,7 @@ function FirstTimeHelper() {
     }
 
     var close = () => {
-        setStep(-1);
+        setStep(0);
     }
 
     // Display the first time user helper modal
@@ -49,8 +53,8 @@ function FirstTimeHelper() {
                     <div class="blur"></div>
                     <div class="helper-modal">
                     <button class="close" onClick={close}><i class="fa-solid fa-xmark"></i></button>
-                        <img src="screenshot1.png"/>
-                        <p>Use the Saved Recipes button to navigate to the saved recipes page.</p>
+                        <img src="screenshot1.jpg"/>
+                        <p>Use the Saved Recipes button to navigate to the saved recipes page!</p>
                         <div class="back-next-buttons">
                             <button onClick={prevStep}>Back</button>
                             <button onClick={nextStep}>Next</button>
@@ -61,31 +65,82 @@ function FirstTimeHelper() {
 
             {step === 3 && (
                 <>
-
+                    <div class="blur"></div>
+                    <div class="helper-modal">
+                    <button class="close" onClick={close}><i class="fa-solid fa-xmark"></i></button>
+                        <img src="screenshot2.jpg"/>
+                        <p>Click on the create recipe button in the corner to begin creating a recipe!</p>
+                        <div class="back-next-buttons">
+                            <button onClick={prevStep}>Back</button>
+                            <button onClick={nextStep}>Next</button>
+                        </div>
+                    </div>
                 </>
             )}
 
             {step === 4 && (
                 <>
-                    
+                    <div class="blur"></div>
+                    <div class="helper-modal">
+                    <button class="close" onClick={close}><i class="fa-solid fa-xmark"></i></button>
+                        <img src="screenshot3.jpg"/>
+                        <p>Enter your recipe details and press submit to save the recipe!</p>
+                        <div class="back-next-buttons">
+                            <button onClick={prevStep}>Back</button>
+                            <button onClick={nextStep}>Next</button>
+                        </div>
+                    </div>
                 </>
             )}
 
             {step === 5 && (
                 <>
-                    
+                    <div class="blur"></div>
+                    <div class="helper-modal">
+                    <button class="close" onClick={close}><i class="fa-solid fa-xmark"></i></button>
+                        <img src="screenshot4.jpg"/>
+                        <p>
+                            Now that your recipe has been saved, click on the recipe to view it's details!
+                            Note that pressing the edit button will allow you to change the details of a recipe!
+                        </p>
+                        <div class="back-next-buttons">
+                            <button onClick={prevStep}>Back</button>
+                            <button onClick={nextStep}>Next</button>
+                        </div>
+                    </div>
                 </>
             )}
 
             {step === 6 && (
                 <>
-                    
+                    <div class="blur"></div>
+                    <div class="helper-modal">
+                    <button class="close" onClick={close}><i class="fa-solid fa-xmark"></i></button>
+                        <img src="screenshot5.jpg"/>
+                        <p>
+                            This page shows all the details of the selected recipe! Use the navigation bar 
+                            at the top to return to either the home page or the saved recipes page!
+                        </p>
+                        <div class="back-next-buttons">
+                            <button onClick={prevStep}>Back</button>
+                            <button onClick={nextStep}>Next</button>
+                        </div>
+                    </div>
                 </>
             )}
 
             {step === 7 && (
                 <>
-                    
+                    <div class="blur"></div>
+                    <div class="helper-modal">
+                    <button class="close" onClick={close}><i class="fa-solid fa-xmark"></i></button>
+                        <h1>That's it!</h1>
+                        <p>Thank you for using my website and enjoy!</p>
+                        <div class="back-next-buttons">
+                            <button onClick={prevStep}>Back</button>
+                            <button onClick={nextStep}>Finish</button>
+                        </div>
+                    </div>
                 </>
             )}  
         </div>
