@@ -17,21 +17,22 @@ function CreateRecipe() {
         name: "",
         url: "",
         description: "",
-        ingredients: "",
+        ingredients: [],
         directions: ""
     });
 
     // Get data from the local storage
     useEffect(() => {
         // Gets already existing recipes and turn the JSON string back into an array
-        var savedRecipes = JSON.parse(localStorage.getItem("recipes"));
+        var recipeList = JSON.parse(localStorage.getItem("user")).recipeList;
 
         // If an id was provided in the params, find the details of the corresponding
         // recipe and fill the create recipe form with it's values
-        if (id) {
-            var singleRecipe = savedRecipes.find(recipe => recipe.id === parseInt(id));
-            if (singleRecipe) {
-                setRecipeData(singleRecipe);
+        if (id && recipeList.includes(parseInt(id))) {
+            if (id) {
+                fetch(`http://localhost:3002/recipe/${id}`)
+                    .then(response => response.json())
+                    .then(data => setRecipeData(data))
             }
         }
     }, []);
@@ -82,50 +83,59 @@ function CreateRecipe() {
         var err = false;
 
         // Gets already existing recipes and turn the JSON string back into an array
-        var savedRecipes = JSON.parse(localStorage.getItem("recipes"));
-
-        // If there aren't any, sets savedRecipes to an empty array
-        if (!savedRecipes) {
-            savedRecipes = [];
-        }
+        var recipeList = JSON.parse(localStorage.getItem("user")).recipeList;
 
         // If an id has been passed through the params, replace an already existing
         // recipe, otherwise create a new recipe
         if (id) {
-            // Loops over each recipe
-            var updatedRecipes = savedRecipes.map(recipe => {
-                if (recipe.id === parseInt(id)) {
-                    if (recipeData.name == "" || recipeData.url == "" || recipeData.description == "" || recipeData.ingredients == "" || recipeData.directions == "") {
-                        alert("Warning! Please fill out all sections!");
-                        err = true;
-                        return recipe;
-                    }
-                    // If the id matches, replace old data with new data
-                    return recipeData;
-                } else {
-                    // If the id doesn't match, keep the old data
-                    return recipe;
-                }
-            });
-            if (!err) {
-                // Save the updated recipe
-                localStorage.setItem("recipes", JSON.stringify(updatedRecipes));
-            }
-        } else {
-            // Create a new recipe with the already existing data from the input
-            // and give it a unique id
-            var newRecipe = { ...recipeData, id: Date.now() };
-
-            if (newRecipe.name == "" || newRecipe.url == "" || newRecipe.description == "" || newRecipe.ingredients == "" || newRecipe.directions == "") {
+            if (recipeData.name == "" || recipeData.url == "" || recipeData.description == "" || recipeData.ingredients.length === 0 || recipeData.directions == "") {
                 alert("Warning! Please fill out all sections!");
                 err = true;
             }
-            if (!err) {
-                // Add it to the array of recipes
-                savedRecipes.push(newRecipe);
 
-                // Update the local storage
-                localStorage.setItem("recipes", JSON.stringify(savedRecipes));
+            if (!err) {
+                // Save the updated recipe
+                var userID = JSON.parse(localStorage.getItem("user")).id;
+
+                fetch("http://localhost:3002/saveRecipe", {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ userID, id })
+                })
+                    .then(response => response.json())
+                    .then(data => localStorage.setItem("user", JSON.stringify(data)));
+            }
+        } else {
+            if (recipeData.name == "" || recipeData.url == "" || recipeData.description == "" || recipeData.ingredients.length === 0 || recipeData.directions == "") {
+                alert("Warning! Please fill out all sections!");
+                err = true;
+            }
+
+            if (!err) {
+                fetch("http://localhost:3002/saveRecipe", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ recipeData })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        var userID = JSON.parse(localStorage.getItem("user")).id;
+                        var id = data.id;
+
+                        fetch("http://localhost:3002/saveRecipe", {
+                            method: "PATCH",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({ userID, id })
+                        })
+                            .then(response => response.json())
+                            .then(data => localStorage.setItem("user", JSON.stringify(data)));
+                    });
             }
         }
 

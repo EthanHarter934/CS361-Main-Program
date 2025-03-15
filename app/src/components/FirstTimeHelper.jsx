@@ -12,10 +12,9 @@ function FirstTimeHelper() {
     useEffect(() => {
         // If user has not visited the website yet, start the first time helper,
         // navigate to the home page, and set the local storage variable to false
-        if (!localStorage.getItem("firstTimeUser")) {
+        if (!localStorage.getItem("user")) {
             setStep(1);
             navigate("/");
-            localStorage.setItem("firstTimeUser", false);
         }
     }, []);
 

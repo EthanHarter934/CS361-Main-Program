@@ -7,6 +7,7 @@ function NavBar() {
             <ul>
                 <li><Link to="/">Recipedia</Link></li>
                 <li><Link to="/savedrecipes">Saved Recipes</Link></li>
+                <li id="login-signup"><Link to="/login">Login/Signup</Link></li>
             </ul>
         </nav>
     );

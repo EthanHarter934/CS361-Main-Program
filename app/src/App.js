@@ -6,6 +6,8 @@ import Home from "./pages/Home";
 import SavedRecipes from "./pages/SavedRecipes";
 import CreateRecipe from "./pages/CreateRecipe";
 import RecipeDetails from "./pages/RecipeDetails";
+import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
 
 // Main app, loads different pages as well as the navigation bar
@@ -20,6 +22,8 @@ function App() {
         <Route path="/createrecipe" element={<CreateRecipe />} />
         <Route path="/createrecipe/:id" element={<CreateRecipe />} />
         <Route path="/recipedetails/:id" element={<RecipeDetails />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
         <Route path="*" element={<NotFound />} />
         </Routes>
     </Router>

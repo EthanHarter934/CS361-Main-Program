@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { data, Link } from "react-router-dom";
 import { useState, useEffect  } from "react";
 
 function SavedRecipes() {
@@ -9,11 +9,16 @@ function SavedRecipes() {
     // Get data from the local storage
     useEffect(() => {
     // Gets already existing recipes and turn the JSON string back into an array
-    var savedRecipes = JSON.parse(localStorage.getItem("recipes"));
-
+    var recipeList = JSON.parse(localStorage.getItem("user")).recipeList;
     // If there are existing recipes, then update the state to show those recipes
-    if (savedRecipes) {
-        setRecipes(savedRecipes);
+    if (recipeList) {
+        console.log("Recipe IDs:", recipeList);
+        var recipePromises = recipeList.map(recipe => 
+            fetch(`http://localhost:3002/recipe/${recipe}`).then(response => response.json())
+        );
+
+        Promise.all(recipePromises)
+            .then(data => setRecipes(data));
     }
     }, []);
 
