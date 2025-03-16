@@ -51,6 +51,21 @@
       "src": "screenshot5.jpg",
       "type": "image/jpg",
       "sizes": "1667x829"
+    },
+    {
+      "src": "screenshot6.jpg",
+      "type": "image/jpg",
+      "sizes": "1667x829"
+    },
+    {
+      "src": "screenshot7.jpg",
+      "type": "image/jpg",
+      "sizes": "1667x829"
+    },
+    {
+      "src": "screenshot8.jpg",
+      "type": "image/jpg",
+      "sizes": "1667x829"
     }
   ],
   "start_url": ".",

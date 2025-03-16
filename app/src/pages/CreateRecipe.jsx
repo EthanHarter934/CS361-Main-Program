@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 
 function CreateRecipe() {
     // Get recipe id from the params
-    var { id } = useParams();
+    var { id: editRecipeID } = useParams();
 
     // Initialize page navigation
     var navigate = useNavigate();
@@ -13,7 +13,7 @@ function CreateRecipe() {
     // The state starts with empty values except for id which defaults to the current
     // time so it acts as a unique identifier
     var [recipeData, setRecipeData] = useState({
-        id: Date.now(),
+        id: 0,
         name: "",
         url: "",
         description: "",
@@ -21,20 +21,42 @@ function CreateRecipe() {
         directions: ""
     });
 
+    var [ingredientText, setIngredientText] = useState("");
+
     // Get data from the local storage
     useEffect(() => {
-        // Gets already existing recipes and turn the JSON string back into an array
-        var recipeList = JSON.parse(localStorage.getItem("user")).recipeList;
+        if (!localStorage.getItem("user")) {
+            navigate("/savedrecipes");
+        } else {
+            // Gets already existing recipes and turn the JSON string back into an array
+            var recipeList = JSON.parse(localStorage.getItem("user")).recipeList;
 
-        // If an id was provided in the params, find the details of the corresponding
-        // recipe and fill the create recipe form with it's values
-        if (id && recipeList.includes(parseInt(id))) {
-            if (id) {
-                fetch(`http://localhost:3002/recipe/${id}`)
-                    .then(response => response.json())
-                    .then(data => setRecipeData(data))
+            // If an id was provided in the params, find the details of the corresponding
+            // recipe and fill the create recipe form with it's values
+            if (editRecipeID && recipeList.includes(parseInt(editRecipeID))) {
+                if (editRecipeID) {
+                    fetch(`http://localhost:3002/recipe/${editRecipeID}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            setRecipeData(data);
+
+                            var ingredientList = data.ingredients.map(ingredient =>
+                                fetch(`http://localhost:3001/ingredient/${ingredient}`)
+                                .then(response => response.json())
+                            );
+                            
+                            Promise.all(ingredientList)
+                                .then(ingredientData => {
+                                    var ingredientInput = [];
+                                    ingredientData.forEach(ingredient => {
+                                        ingredientInput.push(ingredient.quantity + " " + ingredient.name);
+                                    });
+                                    setIngredientText(ingredientInput.join(", "));
+                                })
+                        })
+                }
             }
-        }
+            }
     }, []);
 
     // When an input field of the create recipe form changes, run handleChange
@@ -77,75 +99,97 @@ function CreateRecipe() {
         }
     };
 
+    var handleIngredientsChange = (e) => {
+        setIngredientText(e.target.value);
+    }
+
+    var handleIngredientsSubmit = () => {
+        var ingredients = ingredientText.split(",");
+
+        var ingredientPromises = ingredients.map(ingredient => {
+            var match = ingredient.trim().match(/^(\d+(\.\d+)?\s*[a-zA-Z]+)?\s*(.*)$/);
+            if (!match) return null;
+
+            if (!match[1]) {
+                match[1] = "1 unit";
+            }
+            var quantity = match[1];
+            var name = match[3];
+
+            return fetch("http://localhost:3001/newIngredient", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, quantity })
+            })
+                .then(response => response.json())
+                .then(data => data.id);            
+        }).filter(promise => promise !== null);
+
+        return Promise.all(ingredientPromises);
+    }
 
     // Saves all the form data to local storage
-    var handleSave = () => {
-        var err = false;
+    var handleSave = (e) => {
+        e.preventDefault();
 
-        // Gets already existing recipes and turn the JSON string back into an array
-        var recipeList = JSON.parse(localStorage.getItem("user")).recipeList;
+        handleIngredientsSubmit().then(ingredientIds => {
+                var updatedData = {
+                    ...recipeData,
+                    ingredients: ingredientIds
+                }
+                
+                var err = false;
 
-        // If an id has been passed through the params, replace an already existing
-        // recipe, otherwise create a new recipe
-        if (id) {
-            if (recipeData.name == "" || recipeData.url == "" || recipeData.description == "" || recipeData.ingredients.length === 0 || recipeData.directions == "") {
-                alert("Warning! Please fill out all sections!");
-                err = true;
-            }
+                if (updatedData.name == "" || updatedData.url == "" || updatedData.description == "" || updatedData.ingredients.length == 0 || updatedData.directions == "") {
+                    alert("Warning! Please fill out all sections!");
+                    err = true;
+                }
 
-            if (!err) {
-                // Save the updated recipe
-                var userID = JSON.parse(localStorage.getItem("user")).id;
-
-                fetch("http://localhost:3002/saveRecipe", {
-                    method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ userID, id })
-                })
-                    .then(response => response.json())
-                    .then(data => localStorage.setItem("user", JSON.stringify(data)));
-            }
-        } else {
-            if (recipeData.name == "" || recipeData.url == "" || recipeData.description == "" || recipeData.ingredients.length === 0 || recipeData.directions == "") {
-                alert("Warning! Please fill out all sections!");
-                err = true;
-            }
-
-            if (!err) {
-                fetch("http://localhost:3002/saveRecipe", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ recipeData })
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        var userID = JSON.parse(localStorage.getItem("user")).id;
-                        var id = data.id;
-
-                        fetch("http://localhost:3002/saveRecipe", {
+                if (!err) {
+                    // If an id has been passed through the params, replace an already existing
+                    // recipe, otherwise create a new recipe
+                    if (editRecipeID) {
+                        fetch("http://localhost:3002/editRecipe", {
                             method: "PATCH",
                             headers: {
                                 "Content-Type": "application/json"
                             },
-                            body: JSON.stringify({ userID, id })
+                            body: JSON.stringify({ ...updatedData })
+                        })
+                            .then(() => {
+                                clearForm();
+                                navigate("/savedrecipes");
+                            })
+                    } else {
+                        fetch("http://localhost:3002/newRecipe", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({ ...updatedData })
                         })
                             .then(response => response.json())
-                            .then(data => localStorage.setItem("user", JSON.stringify(data)));
-                    });
-            }
-        }
+                            .then(data => {
+                                var userID = JSON.parse(localStorage.getItem("user")).id;
+                                var recipeID = data.id;
 
-        if (!err) {
-            // Clear all inputs
-            clearForm();
-
-            // Navigate back to saved recipes
-            navigate("/savedrecipes");
-        }
+                                fetch("http://localhost:3003/saveRecipe", {
+                                    method: "PATCH",
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    body: JSON.stringify({ userID, recipeID })
+                                })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        localStorage.setItem("user", JSON.stringify(data))
+                                        clearForm();
+                                        navigate("/savedrecipes");
+                                    });
+                            });
+                    }
+                }
+            });
     };
 
     var handleCancel = () => {
@@ -188,7 +232,7 @@ function CreateRecipe() {
         </div>
         <div class="create-recipe-field" id="enter-ingredients">
             <label>Ingredient List:</label> 
-            <textarea name="ingredients" value={recipeData.ingredients} onChange={handleChange}></textarea>
+            <textarea name="ingredients" value={ingredientText} onChange={handleIngredientsChange}></textarea>
         </div>
         <div class="create-recipe-field" id="enter-directions">
             <label>Recipe Directions:</label> 

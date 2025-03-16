@@ -53,7 +53,7 @@ function FirstTimeHelper() {
                     <div class="helper-modal">
                     <button class="close" onClick={close}><i class="fa-solid fa-xmark"></i></button>
                         <img src="screenshot1.jpg"/>
-                        <p>Use the Saved Recipes button to navigate to the saved recipes page!</p>
+                        <p>Use the Login/Signup button to navigate to the login page!</p>
                         <div class="back-next-buttons">
                             <button onClick={prevStep}>Back</button>
                             <button onClick={nextStep}>Next</button>
@@ -68,7 +68,10 @@ function FirstTimeHelper() {
                     <div class="helper-modal">
                     <button class="close" onClick={close}><i class="fa-solid fa-xmark"></i></button>
                         <img src="screenshot2.jpg"/>
-                        <p>Click on the create recipe button in the corner to begin creating a recipe!</p>
+                        <p>
+                            Enter your login credentials and click the login button to login! If you don't have
+                            an account, click on the sign up button!
+                        </p>
                         <div class="back-next-buttons">
                             <button onClick={prevStep}>Back</button>
                             <button onClick={nextStep}>Next</button>
@@ -83,7 +86,7 @@ function FirstTimeHelper() {
                     <div class="helper-modal">
                     <button class="close" onClick={close}><i class="fa-solid fa-xmark"></i></button>
                         <img src="screenshot3.jpg"/>
-                        <p>Enter your recipe details and press submit to save the recipe!</p>
+                        <p>Use the Saved Recipes button to navigate to the saved recipes page!</p>
                         <div class="back-next-buttons">
                             <button onClick={prevStep}>Back</button>
                             <button onClick={nextStep}>Next</button>
@@ -98,10 +101,7 @@ function FirstTimeHelper() {
                     <div class="helper-modal">
                     <button class="close" onClick={close}><i class="fa-solid fa-xmark"></i></button>
                         <img src="screenshot4.jpg"/>
-                        <p>
-                            Now that your recipe has been saved, click on the recipe to view it's details!
-                            Note that pressing the edit button will allow you to change the details of a recipe!
-                        </p>
+                        <p>Click on the create recipe button in the corner to begin creating a recipe!</p>
                         <div class="back-next-buttons">
                             <button onClick={prevStep}>Back</button>
                             <button onClick={nextStep}>Next</button>
@@ -116,8 +116,41 @@ function FirstTimeHelper() {
                     <div class="helper-modal">
                     <button class="close" onClick={close}><i class="fa-solid fa-xmark"></i></button>
                         <img src="screenshot5.jpg"/>
+                        <p>Enter your recipe details and press submit to save the recipe!</p>
+                        <div class="back-next-buttons">
+                            <button onClick={prevStep}>Back</button>
+                            <button onClick={nextStep}>Next</button>
+                        </div>
+                    </div>
+                </>
+            )}
+
+            {step === 7 && (
+                <>
+                    <div class="blur"></div>
+                    <div class="helper-modal">
+                    <button class="close" onClick={close}><i class="fa-solid fa-xmark"></i></button>
+                        <img src="screenshot6.jpg"/>
                         <p>
-                            This page shows all the details of the selected recipe! Use the navigation bar 
+                            Now that your recipe has been saved, click on the recipe to view it's details!
+                            Note that pressing the edit button will allow you to change the details of a recipe!
+                        </p>
+                        <div class="back-next-buttons">
+                            <button onClick={prevStep}>Back</button>
+                            <button onClick={nextStep}>Next</button>
+                        </div>
+                    </div>
+                </>
+            )}
+
+            {step === 8 && (
+                <>
+                    <div class="blur"></div>
+                    <div class="helper-modal">
+                    <button class="close" onClick={close}><i class="fa-solid fa-xmark"></i></button>
+                        <img src="screenshot7.jpg"/>
+                        <p>
+                            This page shows the top of the details of the selected recipe! Use the navigation bar 
                             at the top to return to either the home page or the saved recipes page!
                         </p>
                         <div class="back-next-buttons">
@@ -128,7 +161,25 @@ function FirstTimeHelper() {
                 </>
             )}
 
-            {step === 7 && (
+            {step === 9 && (
+                <>
+                    <div class="blur"></div>
+                    <div class="helper-modal">
+                    <button class="close" onClick={close}><i class="fa-solid fa-xmark"></i></button>
+                        <img src="screenshot8.jpg"/>
+                        <p>
+                            This page shows the meal multiplier which changes the quantity of the ingredients as
+                            well as the nutritional summary!
+                        </p>
+                        <div class="back-next-buttons">
+                            <button onClick={prevStep}>Back</button>
+                            <button onClick={nextStep}>Next</button>
+                        </div>
+                    </div>
+                </>
+            )}
+
+            {step === 10 && (
                 <>
                     <div class="blur"></div>
                     <div class="helper-modal">

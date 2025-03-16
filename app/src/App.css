@@ -426,7 +426,7 @@ button {
 }
 
 .meal-multiplier {
-  margin: 20px;
+  margin: 10px;
   margin-left: 0;
   padding: 30px;
   border: solid;
@@ -434,13 +434,20 @@ button {
   background-color: rgba(255, 255, 255, 0.1);
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
   border-radius: 10px;
-  display: flex;
-  flex-direction: column;
+  max-width: 160px;
+  height: fit-content;
+}
+
+.meal-multiplier h3, .summary h3, .ingredients h3 {
+  line-height: normal;
+  margin-top: -20px;
+  margin-bottom: 20px;
 }
 
 #scalar {
+  display: block;
   margin: auto;
-  margin-top: 5px;
+  margin-top: 15px;
   border: none;
   border-radius: 10px;
   width: 60%;
@@ -451,8 +458,10 @@ button {
 }
 
 #scalar-submit {
+  display: block;
   margin: auto;
-  margin-top: 10px;
+  margin-top: 15px;
+  margin-bottom: 0px;
   width: 40%;
   height: 25px;
   border: none;
@@ -465,13 +474,14 @@ button {
 }
 
 .ingredients {
-  margin: 20px;
+  margin: 10px;
   padding: 30px;
   border: solid;
   border-color: white;
   background-color: rgba(255, 255, 255, 0.1);
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
   border-radius: 10px;
+  width: 400px;
 }
 
 .ingredients ul {
@@ -481,7 +491,7 @@ button {
 }
 
 .summary {
-  margin: 20px;
+  margin: 10px;
   margin-right: 0;
   padding: 30px;
   border: solid;
@@ -489,6 +499,8 @@ button {
   background-color: rgba(255, 255, 255, 0.1);
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
   border-radius: 10px;
+  max-width: 230px;
+  height: fit-content;
 }
 
 .summary ul {
@@ -553,4 +565,13 @@ button {
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
   border-radius: 10px;
   color: rgb(114, 6, 6);
+}
+
+.registeredUser {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  line-height: 50px;
 }

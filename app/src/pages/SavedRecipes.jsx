@@ -1,4 +1,4 @@
-import { data, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState, useEffect  } from "react";
 
 function SavedRecipes() {
@@ -6,19 +6,28 @@ function SavedRecipes() {
     // The state starts with no data (null)
     var [recipes, setRecipes] = useState([]);
 
+    var [defaultText, setDefaultText] = useState("");
+
     // Get data from the local storage
     useEffect(() => {
     // Gets already existing recipes and turn the JSON string back into an array
-    var recipeList = JSON.parse(localStorage.getItem("user")).recipeList;
+    var user = JSON.parse(localStorage.getItem("user"));
+
     // If there are existing recipes, then update the state to show those recipes
-    if (recipeList) {
-        console.log("Recipe IDs:", recipeList);
-        var recipePromises = recipeList.map(recipe => 
+    if (user) {
+        var recipePromises = user.recipeList.map(recipe => 
             fetch(`http://localhost:3002/recipe/${recipe}`).then(response => response.json())
         );
 
         Promise.all(recipePromises)
-            .then(data => setRecipes(data));
+            .then(data => {
+                if (data.length == 0) {
+                    setDefaultText("Not seeing any recipes, click the create recipe button in the bottom right to get started!")
+                }
+                setRecipes(data)
+            });
+    } else {
+        setDefaultText("Looks like you need to login, click the signup button in the top right!")
     }
     }, []);
 
@@ -28,27 +37,29 @@ function SavedRecipes() {
             return;
         }
         
-        // Gets already existing recipes and turn the JSON string back into an array
-        var savedRecipes = JSON.parse(localStorage.getItem("recipes"));
+        var userID = JSON.parse(localStorage.getItem("user")).id;
 
-        // If there are existing recipes, delete the selected recipe
-        if (savedRecipes) {
-            // Initializes a new array that filters out the recipe that needs to be
-            // deleted using the id to match
-            var updatedRecipes = savedRecipes.filter(recipe => recipe.id !== id);
-
-            // Stores the new array of recipes in local storage
-            localStorage.setItem("recipes", JSON.stringify(updatedRecipes));
-
-            // Updates the state to match the new array
-            setRecipes(updatedRecipes);
-        }
+        fetch("http://localhost:3003/deleteRecipe", {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ userID, recipeID: id })
+        })
+            .then(response => response.json())
+            .then(data => {
+                localStorage.setItem("user", JSON.stringify(data));
+                window.location.reload();
+            });
     };
 
     // Display each saved recipe
     return (
     <div class="saved-recipes">
         <h1>Saved Recipes</h1>
+        <div>
+            <h3 class="registeredUser">{defaultText}</h3>
+        </div>
         <ul>
             {recipes.map((recipe) => (
                 <li key={recipe.id}>
