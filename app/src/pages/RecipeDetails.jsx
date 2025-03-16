@@ -5,20 +5,15 @@ function RecipeDetails() {
     // Get recipe id from the params
     var { id } = useParams();
 
-    // Creates a state called recipe, which uses setRecipe to update the state.
-    // The state starts with no data (null)
+    // Creates states which all start with empty values except for scalar which defaults to 1
     var [recipe, setRecipe] = useState(null);
-
     var [ingredients, setIngredients] = useState([]);
-
     var [summary, setSummary] = useState(null);
-
     var [scalar, setScalar] = useState(1);
-
     var [baseIngredients, setBaseIngredients] = useState([]);
-
     var [baseSummary, setBaseSummary] = useState(null);
 
+    // Checks for valid scalar input
     var handleScalarChange = (e) => {
         var value = e.target.value;
 
@@ -30,19 +25,17 @@ function RecipeDetails() {
     };
 
     var handleScalarSubmit = () => {
+        // Check that baseIngredients and baseSummary exist
         if (!baseIngredients.length) {
-            console.error("Error: baseIngredients is missing.");
             return; 
         }
     
         if (!baseSummary) {
-            console.error("Error: baseSummary is missing.");
             return;
         }
 
-        console.log(baseSummary)
-        console.log(baseIngredients)
-
+        // Send a request to scale the array of ingredients 
+        // based off the given scalar
         fetch("http://localhost:3004/scale-ingredients", {
             method: "POST",
             headers: {
@@ -56,6 +49,8 @@ function RecipeDetails() {
             .then(response => response.json())
             .then(data => setIngredients(data.scaledIngredients));
 
+        // Send a request to scale the summary based 
+        // off the given scalar
         fetch("http://localhost:3004/scale-summary", {
             method: "POST",
             headers: {
@@ -73,26 +68,34 @@ function RecipeDetails() {
             .then(data => setSummary(data.summary));
     };
 
-    // Get data from the local storage
+    // Get data from recipe and ingredient databases then get the nutritional summary
     useEffect(() => {
+        // Send a request to retrieve the recipe with the given ID
         fetch(`http://localhost:3002/recipe/${id}`)
             .then(response => response.json())
             .then(data => {
+                // Update the recipe state and for each ingredient, send a request to
+                // get the ingredient details
                 setRecipe(data);
                 var ingredientList = data.ingredients.map(ingredient =>
                     fetch(`http://localhost:3001/ingredient/${ingredient}`)
                     .then(response => response.json())
                 );
                 
+                // Wait for all ingredients to be retrieved
                 Promise.all(ingredientList)
                     .then(ingredientData => {
+                        // Create an array with the ingredient quantity and name combined
                         var ingredientInput = [];
                         ingredientData.forEach(ingredient => {
                             ingredientInput.push(ingredient.quantity + " " + ingredient.name);
                         });
+                        // Update the ingredients and baseIngredients states
                         setIngredients(ingredientInput);
                         setBaseIngredients(ingredientInput);
 
+                        // Send a request to get the nutritional summary from the array of 
+                        // ingredients and the scalar which defaults to 1
                         fetch("http://localhost:3004/summary", {
                             method: "POST",
                             headers: {
@@ -105,6 +108,7 @@ function RecipeDetails() {
                         })
                             .then(response => response.json())
                             .then(data => {
+                                // Update the summary and baseSummary states
                                 setSummary(data.summary);
                                 setBaseSummary(data.summary);
                             });

@@ -2,10 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
+    // Declare all states
     var [username, setUsername] = useState("");
     var [password, setPassword] = useState("");
     var [error, setError] = useState("");
 
+    // Initialize page navigation
     var navigate = useNavigate();
 
     var handleUsernameChange = (e) => {
@@ -17,6 +19,7 @@ function Login() {
     };
 
     var handleSubmit = () => {
+        // Fetch user info using POST with the username and password as the body
         fetch("http://localhost:3003/login", {
             method: "POST",
             headers: {
@@ -26,6 +29,8 @@ function Login() {
         })
             .then(response => response.json())
             .then(data => {
+                // If there was an error, display it, otherwise set the user data
+                // to the local storage and navigate back to the home page
                 if (data.error) {
                     setError(data.error);
                 } else {
@@ -40,6 +45,7 @@ function Login() {
         navigate("/signup");
     }
     
+    // Display login form
     return (
     <div class="Home">
         <div class="login">

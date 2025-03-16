@@ -6,14 +6,16 @@ function SavedRecipes() {
     // The state starts with no data (null)
     var [recipes, setRecipes] = useState([]);
 
+    // Creates a state called defaultText, which uses setDefaultText to update the state.
+    // The state starts with no data ("")
     var [defaultText, setDefaultText] = useState("");
 
     // Get data from the local storage
     useEffect(() => {
-    // Gets already existing recipes and turn the JSON string back into an array
+    // Gets user data from the local storage
     var user = JSON.parse(localStorage.getItem("user"));
 
-    // If there are existing recipes, then update the state to show those recipes
+    // If the user data exists, then start getting the info for each recipe
     if (user) {
         var recipePromises = user.recipeList.map(recipe => 
             fetch(`http://localhost:3002/recipe/${recipe}`).then(response => response.json())
@@ -21,12 +23,16 @@ function SavedRecipes() {
 
         Promise.all(recipePromises)
             .then(data => {
+                // Once all recipes have been loaded, check if there are no recipes, and if so, add a message to get started
                 if (data.length == 0) {
                     setDefaultText("Not seeing any recipes, click the create recipe button in the bottom right to get started!")
                 }
+
+                // Otherwise save the recipes to the recipes state
                 setRecipes(data)
             });
     } else {
+        // If user isn't logged in, display the following message
         setDefaultText("Looks like you need to login, click the signup button in the top right!")
     }
     }, []);
@@ -37,8 +43,11 @@ function SavedRecipes() {
             return;
         }
         
+        // Gets user ID from the local storage
         var userID = JSON.parse(localStorage.getItem("user")).id;
 
+        // Send a request to delete the recipe with the given ID 
+        // from the user with the ID of the currently logged in user
         fetch("http://localhost:3003/deleteRecipe", {
             method: "PATCH",
             headers: {
@@ -48,6 +57,8 @@ function SavedRecipes() {
         })
             .then(response => response.json())
             .then(data => {
+                // Once the recipe has been deleted, update the user 
+                // data in the local storage
                 localStorage.setItem("user", JSON.stringify(data));
                 window.location.reload();
             });

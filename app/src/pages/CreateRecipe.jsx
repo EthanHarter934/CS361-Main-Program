@@ -10,8 +10,7 @@ function CreateRecipe() {
     var navigate = useNavigate();
 
     // Creates a state called recipeData, which uses setRecipeData to update the state.
-    // The state starts with empty values except for id which defaults to the current
-    // time so it acts as a unique identifier
+    // The state starts with empty values
     var [recipeData, setRecipeData] = useState({
         id: 0,
         name: "",
@@ -25,32 +24,41 @@ function CreateRecipe() {
 
     // Get data from the local storage
     useEffect(() => {
+        // Go back to saved recipes is user isn't logged in
         if (!localStorage.getItem("user")) {
             navigate("/savedrecipes");
         } else {
             // Gets already existing recipes and turn the JSON string back into an array
             var recipeList = JSON.parse(localStorage.getItem("user")).recipeList;
 
-            // If an id was provided in the params, find the details of the corresponding
-            // recipe and fill the create recipe form with it's values
+            // If an id was provided in the params, send a request to get the the details of 
+            // the corresponding recipe and fill the create recipe form with it's values
             if (editRecipeID && recipeList.includes(parseInt(editRecipeID))) {
                 if (editRecipeID) {
+                    // Send a request to get the recipe details
                     fetch(`http://localhost:3002/recipe/${editRecipeID}`)
                         .then(response => response.json())
                         .then(data => {
+                            // Update the recipe state
                             setRecipeData(data);
 
+                            // For each ingredient ID in the recipe, send a request to get
+                            // the ingredient details and store it all in an array
                             var ingredientList = data.ingredients.map(ingredient =>
                                 fetch(`http://localhost:3001/ingredient/${ingredient}`)
                                 .then(response => response.json())
                             );
                             
+                            // Once all ingredients have been retrieved, create a new array with the 
+                            // quantity and names joined, then join the new array into one string
                             Promise.all(ingredientList)
                                 .then(ingredientData => {
                                     var ingredientInput = [];
                                     ingredientData.forEach(ingredient => {
                                         ingredientInput.push(ingredient.quantity + " " + ingredient.name);
                                     });
+
+                                    // Update ingredient text state with joined array
                                     setIngredientText(ingredientInput.join(", "));
                                 })
                         })
@@ -103,19 +111,28 @@ function CreateRecipe() {
         setIngredientText(e.target.value);
     }
 
+    // When the form is submitted, split up all the ingredients and send them to be
+    // new ingredients in the ingredient database
     var handleIngredientsSubmit = () => {
+        // Split ingredients by commas
         var ingredients = ingredientText.split(",");
 
+        // Create an array of ingredient IDs
         var ingredientPromises = ingredients.map(ingredient => {
+            // Separate the quantity from the name
             var match = ingredient.trim().match(/^(\d+(\.\d+)?\s*[a-zA-Z]+)?\s*(.*)$/);
             if (!match) return null;
 
+            // Default to 1 unit if no quantity is given
             if (!match[1]) {
                 match[1] = "1 unit";
             }
+
+            // Set quantity and name
             var quantity = match[1];
             var name = match[3];
 
+            // Send the new ingredient then store the returned ID in the array
             return fetch("http://localhost:3001/newIngredient", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -125,6 +142,7 @@ function CreateRecipe() {
                 .then(data => data.id);            
         }).filter(promise => promise !== null);
 
+        // Return the array of ingredient IDs
         return Promise.all(ingredientPromises);
     }
 
@@ -132,7 +150,9 @@ function CreateRecipe() {
     var handleSave = (e) => {
         e.preventDefault();
 
+        // Get the array of ingredient IDs
         handleIngredientsSubmit().then(ingredientIds => {
+                // Take all the other recipe data and add the new array of ingredient IDs
                 var updatedData = {
                     ...recipeData,
                     ingredients: ingredientIds
@@ -140,6 +160,7 @@ function CreateRecipe() {
                 
                 var err = false;
 
+                // Check to make sure all fields are filled out
                 if (updatedData.name == "" || updatedData.url == "" || updatedData.description == "" || updatedData.ingredients.length == 0 || updatedData.directions == "") {
                     alert("Warning! Please fill out all sections!");
                     err = true;
@@ -149,6 +170,7 @@ function CreateRecipe() {
                     // If an id has been passed through the params, replace an already existing
                     // recipe, otherwise create a new recipe
                     if (editRecipeID) {
+                        // Send a request to update an existing recipe
                         fetch("http://localhost:3002/editRecipe", {
                             method: "PATCH",
                             headers: {
@@ -161,6 +183,7 @@ function CreateRecipe() {
                                 navigate("/savedrecipes");
                             })
                     } else {
+                        // Send a request to add a new recipe
                         fetch("http://localhost:3002/newRecipe", {
                             method: "POST",
                             headers: {
@@ -170,9 +193,12 @@ function CreateRecipe() {
                         })
                             .then(response => response.json())
                             .then(data => {
+                                // Get the user ID from the local storage and the recipe ID 
+                                // from the response
                                 var userID = JSON.parse(localStorage.getItem("user")).id;
                                 var recipeID = data.id;
 
+                                // Send a request to add a new recipe ID to the user's data
                                 fetch("http://localhost:3003/saveRecipe", {
                                     method: "PATCH",
                                     headers: {
@@ -182,6 +208,7 @@ function CreateRecipe() {
                                 })
                                     .then(response => response.json())
                                     .then(data => {
+                                        // Update the user data in local storage
                                         localStorage.setItem("user", JSON.stringify(data))
                                         clearForm();
                                         navigate("/savedrecipes");

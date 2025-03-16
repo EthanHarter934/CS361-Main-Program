@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function SignUp() {
+    // Declare all states
     var [username, setUsername] = useState("");
     var [password, setPassword] = useState("");
 
+    // Initialize page navigation
     var navigate = useNavigate();
 
     var handleUsernameChange = (e) => {
@@ -15,6 +17,7 @@ function SignUp() {
         setPassword(e.target.value);
     };
 
+    // Send a new user request with the username and password from the input fields
     var handleSubmit = () => {
         fetch("http://localhost:3003/newUser", {
             method: "POST",
@@ -25,11 +28,15 @@ function SignUp() {
         })
             .then(response => response.json())
             .then(data => {
+                // Save the returned user data to the local storage
                 localStorage.setItem("user", JSON.stringify(data));
+
+                // Navigate back to the home page
                 navigate("/");
             })
     };
     
+    // Display sign up form
     return (
     <div class="Home">
         <div class="login">
