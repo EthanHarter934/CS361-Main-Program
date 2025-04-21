@@ -1,7 +1,7 @@
-import './App.css';
+import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavBar from "./components/NavBar";
-import FirstTimeHelper from './components/FirstTimeHelper';
+import FirstTimeHelper from "./components/FirstTimeHelper";
 import Home from "./pages/Home";
 import SavedRecipes from "./pages/SavedRecipes";
 import CreateRecipe from "./pages/CreateRecipe";
@@ -12,11 +12,11 @@ import NotFound from "./pages/NotFound";
 
 // Main app, loads different pages as well as the navigation bar
 function App() {
-    return (
+  return (
     <Router>
-        <NavBar />
-        <FirstTimeHelper />
-        <Routes>
+      <NavBar />
+      <FirstTimeHelper />
+      <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/savedrecipes" element={<SavedRecipes />} />
         <Route path="/createrecipe" element={<CreateRecipe />} />
@@ -25,9 +25,9 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="*" element={<NotFound />} />
-        </Routes>
+      </Routes>
     </Router>
-    );
+  );
 }
 
 export default App;

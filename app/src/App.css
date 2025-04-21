@@ -1,5 +1,15 @@
-h1, h3, p, button, .link, li, label, button, input, textarea, label {
-  font-family: 'Corben', Georgia, Times, serif;
+h1,
+h3,
+p,
+button,
+.link,
+li,
+label,
+button,
+input,
+textarea,
+label {
+  font-family: "Corben", Georgia, Times, serif;
 }
 
 body {
@@ -70,7 +80,8 @@ h3 {
   justify-content: center;
 }
 
-.helper-modal .buttons button, .helper-modal .back-next-buttons button {
+.helper-modal .buttons button,
+.helper-modal .back-next-buttons button {
   font-size: 20px;
   color: black;
   text-decoration: none;
@@ -252,7 +263,8 @@ h3 {
   cursor: pointer;
 }
 
-.edit:hover, .delete:hover {
+.edit:hover,
+.delete:hover {
   border-radius: 10px;
   background-color: rgba(0, 0, 0, 0.19);
 }
@@ -340,11 +352,13 @@ h3 {
   margin: 5px;
 }
 
-#enter-name, #enter-url {
+#enter-name,
+#enter-url {
   align-items: center;
 }
 
-#enter-description, #enter-directions {
+#enter-description,
+#enter-directions {
   display: flex;
   flex-direction: column;
 }
@@ -392,7 +406,9 @@ button {
   width: 60%;
 }
 
-.recipe-details ul, .recipe-details p, .recipe-details label {
+.recipe-details ul,
+.recipe-details p,
+.recipe-details label {
   color: white;
   font-size: larger;
 }
@@ -420,7 +436,7 @@ button {
   flex-direction: row;
 }
 
-.ingredients-nutrition-section h3{
+.ingredients-nutrition-section h3 {
   margin: 0px;
   margin-top: -30px;
 }
@@ -438,7 +454,9 @@ button {
   height: fit-content;
 }
 
-.meal-multiplier h3, .summary h3, .ingredients h3 {
+.meal-multiplier h3,
+.summary h3,
+.ingredients h3 {
   line-height: normal;
   margin-top: -20px;
   margin-bottom: 20px;
@@ -557,8 +575,8 @@ button {
   align-self: center;
   position: absolute;
   top: 50%;
-  left:50%;
-  transform: translate(-50%,-50%);
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 600px;
   height: 500px;
   background-color: rgba(255, 255, 255, 0.1);
